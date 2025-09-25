@@ -62,7 +62,7 @@
                         <?php if(auth()->guard()->check()): ?>
                             <div class="relative" x-data="{ open: false }">
                                 <button @click="open = !open" class="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
-                                    <img src="<?php echo e(auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https:
+                                    <img src="<?php echo e(auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name)); ?>"
                                          alt="<?php echo e(auth()->user()->name); ?>" 
                                          class="h-8 w-8 rounded-full">
                                     <div class="flex flex-col items-start">
