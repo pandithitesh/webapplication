@@ -5,26 +5,12 @@ use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\EventController as WebEventController;
 use App\Http\Controllers\Web\AuthController as WebAuthController;
 use App\Http\Controllers\Web\DashboardController as WebDashboardController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-// Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events', [WebEventController::class, 'index'])->name('events.index');
 Route::get('/events/{slug}', [WebEventController::class, 'show'])->name('events.show');
 Route::get('/privacy-policy', function () { return view('privacy-policy'); })->name('privacy-policy');
 Route::get('/terms-of-service', function () { return view('terms-of-service'); })->name('terms-of-service');
 
-// Authentication routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [WebAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [WebAuthController::class, 'login']);
@@ -34,12 +20,9 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [WebAuthController::class, 'logout'])->name('logout');
 
-// Protected routes
 Route::middleware('auth')->group(function () {
-    // Dashboard
     Route::get('/dashboard', [WebDashboardController::class, 'index'])->name('dashboard');
     
-    // Event management (organizer only)
     Route::middleware('role:organizer')->prefix('organizer')->name('organizer.')->group(function () {
         Route::get('/events', [WebEventController::class, 'manage'])->name('events.index');
         Route::get('/events/create', [WebEventController::class, 'create'])->name('events.create');
@@ -50,7 +33,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/bookings', [WebDashboardController::class, 'bookings'])->name('bookings.index');
     });
     
-    // Attendee routes
     Route::middleware('role:attendee')->prefix('attendee')->name('attendee.')->group(function () {
         Route::get('/bookings', [WebDashboardController::class, 'myBookings'])->name('bookings.index');
         Route::post('/bookings', [WebDashboardController::class, 'createBooking'])->name('bookings.store');

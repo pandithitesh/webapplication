@@ -6,16 +6,8 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Event>
- */
 class EventFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $startDate = fake()->dateTimeBetween('now', '+3 months');
@@ -53,9 +45,6 @@ class EventFactory extends Factory
         ];
     }
 
-    /**
-     * Create a published event.
-     */
     public function published(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -63,9 +52,6 @@ class EventFactory extends Factory
         ]);
     }
 
-    /**
-     * Create a draft event.
-     */
     public function draft(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -73,9 +59,6 @@ class EventFactory extends Factory
         ]);
     }
 
-    /**
-     * Create a featured event.
-     */
     public function featured(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -83,9 +66,6 @@ class EventFactory extends Factory
         ]);
     }
 
-    /**
-     * Create an upcoming event.
-     */
     public function upcoming(): static
     {
         return $this->state(function (array $attributes) {

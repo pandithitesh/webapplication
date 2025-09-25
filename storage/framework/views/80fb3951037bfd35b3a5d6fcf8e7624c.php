@@ -233,7 +233,7 @@
                             <div class="border-b border-gray-200 pb-6 last:border-b-0">
                                 <div class="flex items-start justify-between mb-2">
                                     <div class="flex items-center">
-                                        <img src="<?php echo e($review->user->avatar ? asset('storage/' . $review->user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name)); ?>" 
+                                        <img src="<?php echo e($review->user->avatar ? asset('storage/' . $review->user->avatar) : 'https:
                                              alt="<?php echo e($review->user->name); ?>" 
                                              class="h-10 w-10 rounded-full mr-3">
                                         <div>
@@ -346,7 +346,7 @@
             <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h3 class="text-xl font-semibold text-gray-900 mb-4">Organizer</h3>
                 <div class="flex items-center mb-4">
-                    <img src="<?php echo e($event->organizer->avatar ? asset('storage/' . $event->organizer->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($event->organizer->name)); ?>" 
+                    <img src="<?php echo e($event->organizer->avatar ? asset('storage/' . $event->organizer->avatar) : 'https:
                          alt="<?php echo e($event->organizer->name); ?>" 
                          class="h-12 w-12 rounded-full mr-4">
                     <div>
@@ -391,7 +391,6 @@
 </div>
 
 <script>
-// Update total amount when ticket quantity changes
 document.getElementById('ticket_quantity').addEventListener('change', function() {
     const quantity = parseInt(this.value);
     const price = <?php echo e($event->price); ?>;

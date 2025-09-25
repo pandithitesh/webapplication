@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display the dashboard
-     */
     public function index()
     {
         $user = auth()->user();
@@ -25,14 +22,10 @@ class DashboardController extends Controller
         }
     }
 
-    /**
-     * Organizer dashboard
-     */
     public function organizer()
     {
         $organizerId = auth()->id();
 
-        // Event statistics
         $eventStats = [
             'total_events' => Event::where('organizer_id', $organizerId)->count(),
             'published_events' => Event::where('organizer_id', $organizerId)->published()->count(),
@@ -40,7 +33,6 @@ class DashboardController extends Controller
             'upcoming_events' => Event::where('organizer_id', $organizerId)->published()->upcoming()->count(),
         ];
 
-        // Booking statistics
         $bookingStats = [
             'total_bookings' => Booking::whereHas('event', function ($query) use ($organizerId) {
                 $query->where('organizer_id', $organizerId);
@@ -56,7 +48,6 @@ class DashboardController extends Controller
             })->confirmed()->sum('total_amount'),
         ];
 
-        // Raw SQL Report: Events with booking statistics
         $eventsReport = DB::select("
             SELECT 
                 e.id,
@@ -78,14 +69,12 @@ class DashboardController extends Controller
             ORDER BY e.start_date ASC
         ", [$organizerId]);
 
-        // Recent events
         $recentEvents = Event::where('organizer_id', $organizerId)
                            ->with(['categories'])
                            ->orderBy('created_at', 'desc')
                            ->limit(5)
                            ->get();
 
-        // Recent bookings
         $recentBookings = Booking::whereHas('event', function ($query) use ($organizerId) {
             $query->where('organizer_id', $organizerId);
         })
@@ -97,14 +86,10 @@ class DashboardController extends Controller
         return view('dashboard.organizer', compact('eventStats', 'bookingStats', 'eventsReport', 'recentEvents', 'recentBookings'));
     }
 
-    /**
-     * Attendee dashboard
-     */
     public function attendee()
     {
         $userId = auth()->id();
 
-        // Booking statistics
         $bookingStats = [
             'total_bookings' => Booking::where('user_id', $userId)->count(),
             'confirmed_bookings' => Booking::where('user_id', $userId)->confirmed()->count(),
@@ -112,14 +97,12 @@ class DashboardController extends Controller
             'cancelled_bookings' => Booking::where('user_id', $userId)->cancelled()->count(),
         ];
 
-        // Recent bookings
         $recentBookings = Booking::where('user_id', $userId)
                                ->with(['event.organizer', 'event.categories'])
                                ->orderBy('created_at', 'desc')
                                ->limit(10)
                                ->get();
 
-        // Upcoming events
         $upcomingEvents = Booking::where('user_id', $userId)
                                ->where('bookings.status', 'confirmed')
                                ->whereHas('event', function ($query) {
@@ -134,9 +117,6 @@ class DashboardController extends Controller
         return view('dashboard.attendee', compact('bookingStats', 'recentBookings', 'upcomingEvents'));
     }
 
-    /**
-     * Show organizer bookings
-     */
     public function bookings(Request $request)
     {
         $organizerId = auth()->id();
@@ -146,12 +126,10 @@ class DashboardController extends Controller
         })
         ->with(['user', 'event']);
 
-        // Filter by event
         if ($request->has('event_id')) {
             $query->where('event_id', $request->get('event_id'));
         }
 
-        // Filter by status
         if ($request->has('status')) {
             $query->where('status', $request->get('status'));
         }
@@ -161,15 +139,11 @@ class DashboardController extends Controller
         return view('dashboard.bookings', compact('bookings'));
     }
 
-    /**
-     * Show attendee's bookings
-     */
     public function myBookings(Request $request)
     {
         $query = auth()->user()->bookings()
                      ->with(['event.organizer', 'event.categories']);
 
-        // Filter by status
         if ($request->has('status')) {
             $query->where('status', $request->get('status'));
         }
@@ -179,9 +153,6 @@ class DashboardController extends Controller
         return view('dashboard.my-bookings', compact('bookings'));
     }
 
-    /**
-     * Create a new booking
-     */
     public function createBooking(Request $request)
     {
         $request->validate([
@@ -192,12 +163,10 @@ class DashboardController extends Controller
 
         $event = Event::findOrFail($request->event_id);
 
-        // Check if event is available for booking
         if (!$event->isRegistrationOpen()) {
             return back()->with('error', 'Registration is not open for this event');
         }
 
-        // Manual validation: Check if there are enough spots available
         $currentBookings = $event->bookings()
             ->whereIn('status', ['confirmed', 'pending'])
             ->sum('ticket_quantity');
@@ -208,7 +177,6 @@ class DashboardController extends Controller
             return back()->with('error', "Not enough spots available. Only {$availableSpots} spots left.");
         }
 
-        // Check if user already has a booking for this event
         $existingBooking = auth()->user()->bookings()
             ->where('event_id', $event->id)
             ->whereIn('status', ['pending', 'confirmed'])
@@ -239,9 +207,6 @@ class DashboardController extends Controller
         return back()->with('success', $message);
     }
 
-    /**
-     * Cancel a booking
-     */
     public function cancelBooking($id)
     {
         $booking = auth()->user()->bookings()->findOrFail($id);

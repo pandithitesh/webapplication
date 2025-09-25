@@ -11,17 +11,10 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
-    /**
-     * Show the login form
-     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
-
-    /**
-     * Handle login request
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -40,17 +33,10 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    /**
-     * Show the registration form
-     */
     public function showRegisterForm()
     {
         return view('auth.register');
     }
-
-    /**
-     * Handle registration request
-     */
     public function register(Request $request)
     {
         $request->validate([
@@ -66,7 +52,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'attendee', // Implicitly set to attendee
+            'role' => 'attendee', 
             'phone' => $request->phone,
             'bio' => $request->bio,
         ]);
@@ -77,9 +63,6 @@ class AuthController extends Controller
                         ->with('success', 'Account created successfully!');
     }
 
-    /**
-     * Handle logout request
-     */
     public function logout(Request $request)
     {
         Auth::logout();

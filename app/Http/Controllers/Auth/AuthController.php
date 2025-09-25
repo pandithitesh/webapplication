@@ -12,9 +12,6 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
-    /**
-     * Register a new user
-     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -38,7 +35,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'attendee', // Implicitly set to attendee
+            'role' => 'attendee', 
             'phone' => $request->phone,
             'bio' => $request->bio,
         ]);
@@ -56,9 +53,6 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /**
-     * Login user
-     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -103,9 +97,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Logout user
-     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -116,9 +107,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Get authenticated user
-     */
     public function me(Request $request)
     {
         return response()->json([
@@ -129,9 +117,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Update user profile
-     */
     public function updateProfile(Request $request)
     {
         $user = $request->user();
@@ -169,9 +154,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Change password
-     */
     public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [

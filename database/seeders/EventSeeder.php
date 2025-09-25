@@ -10,9 +10,6 @@ use Carbon\Carbon;
 
 class EventSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $organizers = User::where('role', 'organizer')->get();
@@ -284,7 +281,6 @@ class EventSeeder extends Seeder
                 'slug' => \Illuminate\Support\Str::slug($eventData['title']),
             ]));
 
-            // Attach categories
             $eventCategories = $categories->whereIn('slug', $categorySlugs);
             $event->categories()->attach($eventCategories->pluck('id'));
         }

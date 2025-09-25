@@ -8,17 +8,17 @@
     <title><?php echo e(config('app.name', 'Event Management System')); ?> - <?php echo $__env->yieldContent('title', 'Home'); ?></title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https:
+    <link href="https:
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https:
     
     <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https:
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https:
     
     <style>
         [x-cloak] { display: none !important; }
@@ -62,7 +62,7 @@
                         <?php if(auth()->guard()->check()): ?>
                             <div class="relative" x-data="{ open: false }">
                                 <button @click="open = !open" class="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
-                                    <img src="<?php echo e(auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name)); ?>" 
+                                    <img src="<?php echo e(auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : 'https:
                                          alt="<?php echo e(auth()->user()->name); ?>" 
                                          class="h-8 w-8 rounded-full">
                                     <div class="flex flex-col items-start">

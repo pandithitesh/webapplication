@@ -10,16 +10,12 @@ use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of events
-     */
     public function index(Request $request)
     {
         $query = Event::with(['organizer', 'categories', 'reviews'])
                      ->published()
                      ->upcoming();
 
-        // Search by title or description
         if ($request->has('search')) {
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
@@ -28,26 +24,22 @@ class EventController extends Controller
             });
         }
 
-        // Filter by category
         if ($request->has('category')) {
             $query->whereHas('categories', function ($q) use ($request) {
                 $q->where('slug', $request->get('category'));
             });
         }
 
-        // Filter by city
         if ($request->has('city')) {
             $query->byCity($request->get('city'));
         }
 
-        // Filter by price range
         if ($request->has('min_price') || $request->has('max_price')) {
             $minPrice = $request->get('min_price', 0);
             $maxPrice = $request->get('max_price', 999999);
             $query->byPriceRange($minPrice, $maxPrice);
         }
 
-        // Filter by date range
         if ($request->has('start_date')) {
             $query->where('start_date', '>=', $request->get('start_date'));
         }
@@ -55,7 +47,6 @@ class EventController extends Controller
             $query->where('start_date', '<=', $request->get('end_date'));
         }
 
-        // Sort options
         $sortBy = $request->get('sort_by', 'start_date');
         $sortOrder = $request->get('sort_order', 'asc');
         
@@ -63,7 +54,6 @@ class EventController extends Controller
             $query->orderBy($sortBy, $sortOrder);
         }
 
-        // Featured events first
         if ($request->get('featured_first', false)) {
             $query->orderBy('is_featured', 'desc');
         }
@@ -77,9 +67,6 @@ class EventController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified event
-     */
     public function show($slug)
     {
         $event = Event::with(['organizer', 'categories', 'reviews.user'])
@@ -100,9 +87,6 @@ class EventController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created event
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -147,12 +131,10 @@ class EventController extends Controller
         $eventData['organizer_id'] = $request->user()->id;
         $eventData['slug'] = Str::slug($request->title);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $eventData['image'] = $request->file('image')->store('events', 'public');
         }
 
-        // Handle multiple images upload
         if ($request->hasFile('images')) {
             $imagePaths = [];
             foreach ($request->file('images') as $image) {
@@ -163,7 +145,6 @@ class EventController extends Controller
 
         $event = Event::create($eventData);
 
-        // Attach categories
         $event->categories()->attach($request->category_ids);
 
         return response()->json([
@@ -173,9 +154,6 @@ class EventController extends Controller
         ], 201);
     }
 
-    /**
-     * Update the specified event
-     */
     public function update(Request $request, $id)
     {
         $event = Event::where('id', $id)
@@ -230,12 +208,10 @@ class EventController extends Controller
 
         $eventData = $request->except(['category_ids', 'images']);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $eventData['image'] = $request->file('image')->store('events', 'public');
         }
 
-        // Handle multiple images upload
         if ($request->hasFile('images')) {
             $imagePaths = [];
             foreach ($request->file('images') as $image) {
@@ -246,7 +222,6 @@ class EventController extends Controller
 
         $event->update($eventData);
 
-        // Update categories if provided
         if ($request->has('category_ids')) {
             $event->categories()->sync($request->category_ids);
         }
@@ -258,9 +233,6 @@ class EventController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified event
-     */
     public function destroy($id)
     {
         $event = Event::where('id', $id)
@@ -282,9 +254,6 @@ class EventController extends Controller
         ]);
     }
 
-    /**
-     * Get featured events
-     */
     public function featured()
     {
         $events = Event::with(['organizer', 'categories'])
@@ -300,9 +269,6 @@ class EventController extends Controller
         ]);
     }
 
-    /**
-     * Get events by organizer
-     */
     public function byOrganizer(Request $request, $organizerId)
     {
         $query = Event::with(['organizer', 'categories'])

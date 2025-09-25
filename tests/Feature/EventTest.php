@@ -89,7 +89,6 @@ class EventTest extends TestCase
         $eventData = [
             'title' => 'Test Event',
             'description' => 'This is a test event',
-            // ... other required fields
         ];
 
         $response = $this->actingAs($attendee, 'sanctum')

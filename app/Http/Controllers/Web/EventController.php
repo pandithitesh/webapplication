@@ -9,16 +9,12 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of events
-     */
     public function index(Request $request)
     {
         $query = Event::with(['organizer', 'categories'])
                      ->published()
                      ->upcoming();
 
-        // Search
         if ($request->has('search')) {
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
@@ -27,26 +23,22 @@ class EventController extends Controller
             });
         }
 
-        // Category filter
         if ($request->has('category')) {
             $query->whereHas('categories', function ($q) use ($request) {
                 $q->where('slug', $request->get('category'));
             });
         }
 
-        // City filter
         if ($request->has('city')) {
             $query->byCity($request->get('city'));
         }
 
-        // Price range filter
         if ($request->has('min_price') || $request->has('max_price')) {
             $minPrice = $request->get('min_price', 0);
             $maxPrice = $request->get('max_price', 999999);
             $query->byPriceRange($minPrice, $maxPrice);
         }
 
-        // Sort
         $sortBy = $request->get('sort', 'start_date');
         $sortOrder = $request->get('order', 'asc');
         
@@ -60,9 +52,6 @@ class EventController extends Controller
         return view('events.index', compact('events', 'categories'));
     }
 
-    /**
-     * Display the specified event
-     */
     public function show($slug)
     {
         $event = Event::with(['organizer', 'categories', 'reviews.user'])
@@ -70,7 +59,6 @@ class EventController extends Controller
                      ->published()
                      ->firstOrFail();
 
-        // Related events
         $relatedEvents = Event::with(['organizer', 'categories'])
                             ->published()
                             ->upcoming()
@@ -84,18 +72,12 @@ class EventController extends Controller
         return view('events.show', compact('event', 'relatedEvents'));
     }
 
-    /**
-     * Show the form for creating a new event
-     */
     public function create()
     {
         $categories = Category::active()->ordered()->get();
         return view('events.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created event
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -134,9 +116,6 @@ class EventController extends Controller
                         ->with('success', 'Event created successfully.');
     }
 
-    /**
-     * Show the form for editing the specified event
-     */
     public function edit($id)
     {
         $event = Event::where('id', $id)
@@ -148,9 +127,6 @@ class EventController extends Controller
         return view('events.edit', compact('event', 'categories'));
     }
 
-    /**
-     * Update the specified event
-     */
     public function update(Request $request, $id)
     {
         $event = Event::where('id', $id)
@@ -193,16 +169,12 @@ class EventController extends Controller
                         ->with('success', 'Event updated successfully.');
     }
 
-    /**
-     * Remove the specified event
-     */
     public function destroy($id)
     {
         $event = Event::where('id', $id)
                      ->where('organizer_id', request()->user()->id)
                      ->firstOrFail();
 
-        // Check if event has any bookings
         $bookingCount = $event->bookings()->count();
         
         if ($bookingCount > 0) {
@@ -216,9 +188,6 @@ class EventController extends Controller
                         ->with('success', 'Event deleted successfully.');
     }
 
-    /**
-     * Manage events for organizer
-     */
     public function manage(Request $request)
     {
         $query = Event::with(['categories'])

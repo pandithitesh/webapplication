@@ -10,20 +10,15 @@ use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
-    /**
-     * Display a listing of user's bookings
-     */
     public function index(Request $request)
     {
         $query = $request->user()->bookings()
                      ->with(['event.organizer', 'event.categories']);
 
-        // Filter by status
         if ($request->has('status')) {
             $query->where('status', $request->get('status'));
         }
 
-        // Filter by payment status
         if ($request->has('payment_status')) {
             $query->where('payment_status', $request->get('payment_status'));
         }
@@ -37,9 +32,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created booking
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -62,7 +54,6 @@ class BookingController extends Controller
 
         $event = Event::findOrFail($request->event_id);
 
-        // Check if event is available for booking
         if (!$event->isRegistrationOpen()) {
             return response()->json([
                 'success' => false,
@@ -70,7 +61,6 @@ class BookingController extends Controller
             ], 400);
         }
 
-        // Check if there are enough spots available
         if ($event->available_spots < $request->ticket_quantity) {
             return response()->json([
                 'success' => false,
@@ -78,7 +68,6 @@ class BookingController extends Controller
             ], 400);
         }
 
-        // Check if user already has a booking for this event
         $existingBooking = $request->user()->bookings()
             ->where('event_id', $event->id)
             ->whereIn('status', ['pending', 'confirmed'])
@@ -129,9 +118,6 @@ class BookingController extends Controller
         }
     }
 
-    /**
-     * Display the specified booking
-     */
     public function show($id)
     {
         $booking = $request->user()->bookings()
@@ -144,9 +130,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Cancel a booking
-     */
     public function cancel(Request $request, $id)
     {
         $booking = $request->user()->bookings()->findOrFail($id);
@@ -179,9 +162,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Get booking statistics for organizer
-     */
     public function statistics(Request $request)
     {
         $organizerId = $request->user()->id;
@@ -214,9 +194,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Get bookings for organizer's events
-     */
     public function organizerBookings(Request $request)
     {
         $query = Booking::with(['user', 'event'])
@@ -224,17 +201,14 @@ class BookingController extends Controller
                          $q->where('organizer_id', $request->user()->id);
                      });
 
-        // Filter by event
         if ($request->has('event_id')) {
             $query->where('event_id', $request->get('event_id'));
         }
 
-        // Filter by status
         if ($request->has('status')) {
             $query->where('status', $request->get('status'));
         }
 
-        // Filter by payment status
         if ($request->has('payment_status')) {
             $query->where('payment_status', $request->get('payment_status'));
         }
@@ -248,9 +222,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Approve or reject a booking (organizer only)
-     */
     public function updateStatus(Request $request, $id)
     {
         $booking = Booking::whereHas('event', function ($query) use ($request) {

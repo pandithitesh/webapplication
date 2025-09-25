@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    /**
-     * Get general dashboard data
-     */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -24,14 +21,10 @@ class DashboardController extends Controller
         }
     }
 
-    /**
-     * Get organizer dashboard data
-     */
     public function organizer(Request $request)
     {
         $organizerId = $request->user()->id;
 
-        // Event statistics
         $eventStats = [
             'total_events' => Event::where('organizer_id', $organizerId)->count(),
             'published_events' => Event::where('organizer_id', $organizerId)->published()->count(),
@@ -40,7 +33,6 @@ class DashboardController extends Controller
             'completed_events' => Event::where('organizer_id', $organizerId)->where('status', 'completed')->count(),
         ];
 
-        // Booking statistics
         $bookingStats = [
             'total_bookings' => Booking::whereHas('event', function ($query) use ($organizerId) {
                 $query->where('organizer_id', $organizerId);
@@ -56,14 +48,12 @@ class DashboardController extends Controller
             })->confirmed()->sum('total_amount'),
         ];
 
-        // Recent events
         $recentEvents = Event::where('organizer_id', $organizerId)
                            ->with(['categories'])
                            ->orderBy('created_at', 'desc')
                            ->limit(5)
                            ->get();
 
-        // Recent bookings
         $recentBookings = Booking::whereHas('event', function ($query) use ($organizerId) {
             $query->where('organizer_id', $organizerId);
         })
@@ -72,7 +62,6 @@ class DashboardController extends Controller
         ->limit(10)
         ->get();
 
-        // Revenue by month (last 12 months)
         $revenueByMonth = Booking::whereHas('event', function ($query) use ($organizerId) {
             $query->where('organizer_id', $organizerId);
         })
@@ -100,14 +89,10 @@ class DashboardController extends Controller
         ]);
     }
 
-    /**
-     * Get attendee dashboard data
-     */
     public function attendee(Request $request)
     {
         $userId = $request->user()->id;
 
-        // Booking statistics
         $bookingStats = [
             'total_bookings' => Booking::where('user_id', $userId)->count(),
             'confirmed_bookings' => Booking::where('user_id', $userId)->confirmed()->count(),
@@ -115,14 +100,12 @@ class DashboardController extends Controller
             'cancelled_bookings' => Booking::where('user_id', $userId)->cancelled()->count(),
         ];
 
-        // Recent bookings
         $recentBookings = Booking::where('user_id', $userId)
                                ->with(['event.organizer', 'event.categories'])
                                ->orderBy('created_at', 'desc')
                                ->limit(10)
                                ->get();
 
-        // Upcoming events
         $upcomingEvents = Booking::where('user_id', $userId)
                                ->confirmed()
                                ->whereHas('event', function ($query) {
@@ -133,7 +116,6 @@ class DashboardController extends Controller
                                ->limit(5)
                                ->get();
 
-        // Past events
         $pastEvents = Booking::where('user_id', $userId)
                            ->confirmed()
                            ->whereHas('event', function ($query) {
@@ -144,7 +126,6 @@ class DashboardController extends Controller
                            ->limit(5)
                            ->get();
 
-        // Reviews written
         $reviewsWritten = Review::where('user_id', $userId)
                               ->with(['event'])
                               ->orderBy('created_at', 'desc')

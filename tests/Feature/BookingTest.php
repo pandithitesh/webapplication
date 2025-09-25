@@ -59,7 +59,6 @@ class BookingTest extends TestCase
             'status' => 'published'
         ]);
 
-        // Create a booking to fill the event
         Booking::factory()->create([
             'event_id' => $event->id,
             'ticket_quantity' => 1,

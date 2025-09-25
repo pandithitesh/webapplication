@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
 {
-    /**
-     * Store a newly created review
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -30,7 +27,6 @@ class ReviewController extends Controller
             ], 422);
         }
 
-        // Verify that the booking belongs to the user and is confirmed
         $booking = Booking::where('id', $request->booking_id)
                          ->where('user_id', $request->user()->id)
                          ->where('event_id', $request->event_id)
@@ -44,7 +40,6 @@ class ReviewController extends Controller
             ], 400);
         }
 
-        // Check if user already reviewed this event
         $existingReview = Review::where('event_id', $request->event_id)
                                ->where('user_id', $request->user()->id)
                                ->where('booking_id', $request->booking_id)
@@ -57,7 +52,6 @@ class ReviewController extends Controller
             ], 400);
         }
 
-        // Check if the event has ended (reviews only allowed after event ends)
         $event = Event::findOrFail($request->event_id);
         if ($event->end_date > now()) {
             return response()->json([
@@ -72,7 +66,7 @@ class ReviewController extends Controller
             'booking_id' => $request->booking_id,
             'rating' => $request->rating,
             'comment' => $request->comment,
-            'is_verified' => true, // Auto-verify since we validated the booking
+            'is_verified' => true, 
         ]);
 
         return response()->json([
@@ -82,9 +76,6 @@ class ReviewController extends Controller
         ], 201);
     }
 
-    /**
-     * Update the specified review
-     */
     public function update(Request $request, $id)
     {
         $review = Review::where('id', $id)
@@ -113,9 +104,6 @@ class ReviewController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified review
-     */
     public function destroy($id)
     {
         $review = Review::where('id', $id)
@@ -130,9 +118,6 @@ class ReviewController extends Controller
         ]);
     }
 
-    /**
-     * Get reviews for an event
-     */
     public function getEventReviews(Request $request, $eventId)
     {
         $event = Event::findOrFail($eventId);
@@ -141,12 +126,10 @@ class ReviewController extends Controller
                       ->with(['user'])
                       ->verified();
 
-        // Filter by rating
         if ($request->has('rating')) {
             $query->byRating($request->get('rating'));
         }
 
-        // Filter by comments only
         if ($request->get('comments_only', false)) {
             $query->withComments();
         }
@@ -160,9 +143,6 @@ class ReviewController extends Controller
         ]);
     }
 
-    /**
-     * Get user's reviews
-     */
     public function getUserReviews(Request $request)
     {
         $query = $request->user()->reviews()

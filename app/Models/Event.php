@@ -11,11 +11,6 @@ class Event extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'organizer_id',
         'title',
@@ -46,11 +41,6 @@ class Event extends Model
         'additional_info',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
@@ -65,9 +55,6 @@ class Event extends Model
         'requires_approval' => 'boolean',
     ];
 
-    /**
-     * Boot the model
-     */
     protected static function boot()
     {
         parent::boot();
@@ -85,49 +72,31 @@ class Event extends Model
         });
     }
 
-    /**
-     * Get the organizer of the event
-     */
     public function organizer()
     {
         return $this->belongsTo(User::class, 'organizer_id');
     }
 
-    /**
-     * Get bookings for this event
-     */
     public function bookings()
     {
         return $this->hasMany(Booking::class);
     }
 
-    /**
-     * Get confirmed bookings for this event
-     */
     public function confirmedBookings()
     {
         return $this->hasMany(Booking::class)->where('status', 'confirmed');
     }
 
-    /**
-     * Get reviews for this event
-     */
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
-    /**
-     * Get categories for this event
-     */
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'event_categories');
     }
 
-    /**
-     * Get attendees for this event
-     */
     public function attendees()
     {
         return $this->belongsToMany(User::class, 'bookings')
@@ -136,33 +105,21 @@ class Event extends Model
                     ->withTimestamps();
     }
 
-    /**
-     * Check if event is published
-     */
     public function isPublished(): bool
     {
         return $this->status === 'published';
     }
 
-    /**
-     * Check if event is cancelled
-     */
     public function isCancelled(): bool
     {
         return $this->status === 'cancelled';
     }
 
-    /**
-     * Check if event is completed
-     */
     public function isCompleted(): bool
     {
         return $this->status === 'completed';
     }
 
-    /**
-     * Check if registration is open
-     */
     public function isRegistrationOpen(): bool
     {
         return $this->isPublished() && 
@@ -170,74 +127,47 @@ class Event extends Model
                $this->start_date > now();
     }
 
-    /**
-     * Get available spots
-     */
     public function getAvailableSpotsAttribute(): int
     {
         $bookedSpots = $this->confirmedBookings()->sum('ticket_quantity');
         return max(0, $this->max_attendees - $bookedSpots);
     }
 
-    /**
-     * Check if event is sold out
-     */
     public function isSoldOut(): bool
     {
         return $this->available_spots <= 0;
     }
 
-    /**
-     * Get average rating
-     */
     public function getAverageRatingAttribute(): float
     {
         return $this->reviews()->avg('rating') ?? 0;
     }
 
-    /**
-     * Get total reviews count
-     */
     public function getReviewsCountAttribute(): int
     {
         return $this->reviews()->count();
     }
 
-    /**
-     * Scope for published events
-     */
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
     }
 
-    /**
-     * Scope for featured events
-     */
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
     }
 
-    /**
-     * Scope for upcoming events
-     */
     public function scopeUpcoming($query)
     {
         return $query->where('start_date', '>', now());
     }
 
-    /**
-     * Scope for events by city
-     */
     public function scopeByCity($query, $city)
     {
         return $query->where('city', 'like', "%{$city}%");
     }
 
-    /**
-     * Scope for events by price range
-     */
     public function scopeByPriceRange($query, $minPrice, $maxPrice)
     {
         return $query->whereBetween('price', [$minPrice, $maxPrice]);

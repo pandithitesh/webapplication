@@ -7,9 +7,6 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of categories
-     */
     public function index()
     {
         $categories = Category::active()
@@ -22,9 +19,6 @@ class CategoryController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created category
-     */
     public function store(Request $request)
     {
         $validator = $request->validate([
@@ -44,9 +38,6 @@ class CategoryController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified category
-     */
     public function show($id)
     {
         $category = Category::with(['events' => function ($query) {
@@ -59,9 +50,6 @@ class CategoryController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified category
-     */
     public function update(Request $request, $id)
     {
         $category = Category::findOrFail($id);
@@ -84,14 +72,10 @@ class CategoryController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified category
-     */
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
 
-        // Check if category has events
         if ($category->events()->count() > 0) {
             return response()->json([
                 'success' => false,

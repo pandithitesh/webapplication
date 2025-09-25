@@ -499,19 +499,16 @@ unset($__errorArgs, $__bag); ?>
 </div>
 
 <script>
-// Set minimum date to today
 document.addEventListener('DOMContentLoaded', function() {
     const today = new Date().toISOString().slice(0, 16);
     document.getElementById('start_date').min = today;
     document.getElementById('end_date').min = today;
     document.getElementById('registration_deadline').max = today;
     
-    // Update end date minimum when start date changes
     document.getElementById('start_date').addEventListener('change', function() {
         document.getElementById('end_date').min = this.value;
     });
     
-    // Update registration deadline maximum when start date changes
     document.getElementById('start_date').addEventListener('change', function() {
         document.getElementById('registration_deadline').max = this.value;
     });

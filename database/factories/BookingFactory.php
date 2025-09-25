@@ -6,16 +6,8 @@ use App\Models\Event;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Booking>
- */
 class BookingFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $ticketQuantity = fake()->numberBetween(1, 5);
@@ -41,9 +33,6 @@ class BookingFactory extends Factory
         ];
     }
 
-    /**
-     * Create a confirmed booking.
-     */
     public function confirmed(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -53,9 +42,6 @@ class BookingFactory extends Factory
         ]);
     }
 
-    /**
-     * Create a pending booking.
-     */
     public function pending(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -65,9 +51,6 @@ class BookingFactory extends Factory
         ]);
     }
 
-    /**
-     * Create a cancelled booking.
-     */
     public function cancelled(): static
     {
         return $this->state(fn (array $attributes) => [
@@ -77,9 +60,6 @@ class BookingFactory extends Factory
         ]);
     }
 
-    /**
-     * Create a paid booking.
-     */
     public function paid(): static
     {
         return $this->state(fn (array $attributes) => [

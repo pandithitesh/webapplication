@@ -10,11 +10,6 @@ class Category extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'slug',
@@ -25,18 +20,10 @@ class Category extends Model
         'sort_order',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'is_active' => 'boolean',
     ];
 
-    /**
-     * Boot the model
-     */
     protected static function boot()
     {
         parent::boot();
@@ -54,34 +41,22 @@ class Category extends Model
         });
     }
 
-    /**
-     * Get events in this category
-     */
     public function events()
     {
         return $this->belongsToMany(Event::class, 'event_categories');
     }
 
-    /**
-     * Get published events in this category
-     */
     public function publishedEvents()
     {
         return $this->belongsToMany(Event::class, 'event_categories')
                     ->where('status', 'published');
     }
 
-    /**
-     * Scope for active categories
-     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    /**
-     * Scope for ordered categories
-     */
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order')->orderBy('name');

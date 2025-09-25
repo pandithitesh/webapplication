@@ -8,12 +8,8 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Create sample organizers
         $organizers = [
             [
                 'name' => 'John Smith',
@@ -45,7 +41,6 @@ class UserSeeder extends Seeder
             User::create($organizer);
         }
 
-        // Create sample attendees
         $attendees = [
             [
                 'name' => 'Alice Brown',
