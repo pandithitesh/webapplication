@@ -8,17 +8,17 @@
     <title><?php echo e(config('app.name', 'Event Management System')); ?> - <?php echo $__env->yieldContent('title', 'Home'); ?></title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https:
-    <link href="https:
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Tailwind CSS -->
-    <script src="https:
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Alpine.js -->
-    <script defer src="https:
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https:
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         [x-cloak] { display: none !important; }
