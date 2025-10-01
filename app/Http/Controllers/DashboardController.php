@@ -118,7 +118,8 @@ class DashboardController extends Controller
                                    $query->where('start_date', '>', now());
                                })
                                ->with(['event.organizer', 'event.categories'])
-                               ->orderBy('start_date', 'asc')
+                               ->join('events', 'bookings.event_id', '=', 'events.id')
+                               ->orderBy('events.start_date', 'asc')
                                ->limit(5)
                                ->get();
 
@@ -128,7 +129,8 @@ class DashboardController extends Controller
                                $query->where('end_date', '<', now());
                            })
                            ->with(['event.organizer', 'event.categories'])
-                           ->orderBy('end_date', 'desc')
+                           ->join('events', 'bookings.event_id', '=', 'events.id')
+                           ->orderBy('events.end_date', 'desc')
                            ->limit(5)
                            ->get();
 
