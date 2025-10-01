@@ -1,0 +1,57 @@
+AI Use Policy References
+
+Student: Hitesh Sharma
+Course: Web Application Development
+Project: Event Management System
+
+AI Policy Stuff
+I know I have to be the one who built this app and I need to be able to explain everything during the demo. I'm responsible for knowing how all my code works and why I made the decisions I did.
+
+What AI Actually Made (The Allowed Stuff)
+1. Test Suite - AI helped me write the test cases
+2. Privacy Policy and Terms of Use - AI wrote the legal stuff
+
+How AI Helped Me (But I Did All The Real Work)
+
+Documentation Help
+AI helped me organize my documentation and make it sound better. But all the technical stuff about how my system works, my database design, and my recommendation algorithm is my own work and understanding.
+
+Debugging Help
+AI helped me find and fix bugs like login problems, booking issues, route errors, and date formatting stuff. But I wrote and fixed all the actual code and I understand what I changed.
+
+Learning Stuff
+AI explained Laravel features, database relationships, and AJAX to me. These explanations helped me learn, but all the actual code I wrote is mine.
+
+Project Ideas
+AI gave me suggestions about how to organize files and name things. But I made all the final decisions about how to build everything.
+
+What I Can Explain
+I can talk about all the important parts of my app:
+
+Database Design - Why I used many-to-many for categories and how my tables connect
+Recommendation Algorithm - How I calculate scores, what data I use, how I handle new users
+Authentication - How login works, what each user role can do, how access is restricted
+Booking System - How I handle event capacity, stop duplicate bookings, my validation rules
+AJAX Features - How filtering and recommendations load without page reloads
+Service Architecture - Why I put recommendation logic in its own class and how it connects to controllers
+Security - My validation strategies, how I protect user data, role permissions
+
+What I Built Myself
+I wrote all the main logic including:
+Event creation, editing, and deletion
+Booking system with capacity and validation
+Authentication and user role management
+My custom recommendation algorithm
+Category and event relationship management
+Database migrations and schema design
+Controllers, models, and all business logic
+Frontend JavaScript for AJAX features
+
+I'm responsible for all the code I submitted and I can walk through any part during the demo.
+
+About AI Help
+AI was just a learning and support tool for me, not something that wrote my code. I used it to understand concepts better, fix bugs, and improve documentation. But I didn't use it to write the core of my project.
+
+Everything important in this system is my own work and I'm ready to explain it all during the final presentation.
+
+Hitesh Sharma
