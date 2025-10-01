@@ -77,16 +77,22 @@ class DashboardController extends Controller
         ->orderBy('month', 'desc')
         ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'event_stats' => $eventStats,
-                'booking_stats' => $bookingStats,
-                'recent_events' => $recentEvents,
-                'recent_bookings' => $recentBookings,
-                'revenue_by_month' => $revenueByMonth,
-            ]
-        ]);
+        // Raw SQL query for events report
+        $eventsReport = DB::select("
+            SELECT 
+                e.title as title,
+                e.start_date as event_date,
+                e.capacity as total_capacity,
+                COALESCE(COUNT(b.id), 0) as current_bookings,
+                (e.capacity - COALESCE(COUNT(b.id), 0)) as remaining_spots
+            FROM events e
+            LEFT JOIN bookings b ON e.id = b.event_id AND b.status = 'confirmed'
+            WHERE e.organizer_id = ? AND e.deleted_at IS NULL
+            GROUP BY e.id, e.title, e.start_date, e.capacity
+            ORDER BY e.start_date DESC
+        ", [$organizerId]);
+
+        return view('dashboard.organizer', compact('eventStats', 'bookingStats', 'recentEvents', 'recentBookings', 'revenueByMonth', 'eventsReport'));
     }
 
     public function attendee(Request $request)
@@ -132,15 +138,89 @@ class DashboardController extends Controller
                               ->limit(5)
                               ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'booking_stats' => $bookingStats,
-                'recent_bookings' => $recentBookings,
-                'upcoming_events' => $upcomingEvents,
-                'past_events' => $pastEvents,
-                'reviews_written' => $reviewsWritten,
-            ]
+        return view('dashboard.attendee', compact('bookingStats', 'recentBookings', 'upcomingEvents', 'pastEvents', 'reviewsWritten'));
+    }
+
+    public function bookings(Request $request)
+    {
+        $organizerId = $request->user()->id;
+        
+        $bookings = Booking::whereHas('event', function ($query) use ($organizerId) {
+            $query->where('organizer_id', $organizerId);
+        })
+        ->with(['user', 'event'])
+        ->orderBy('created_at', 'desc')
+        ->paginate(15);
+
+        return view('dashboard.organizer', compact('bookings'));
+    }
+
+    public function myBookings(Request $request)
+    {
+        $userId = $request->user()->id;
+        
+        $bookings = Booking::where('user_id', $userId)
+            ->with(['event.organizer', 'event.categories'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return view('dashboard.attendee', compact('bookings'));
+    }
+
+    public function createBooking(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'ticket_quantity' => 'required|integer|min:1|max:10',
         ]);
+
+        $userId = $request->user()->id;
+        $eventId = $request->event_id;
+        $ticketQuantity = $request->ticket_quantity;
+
+        $event = Event::findOrFail($eventId);
+
+        if (Booking::where('user_id', $userId)->where('event_id', $eventId)->exists()) {
+            return back()->with('error', 'You have already booked this event.');
+        }
+
+        if ($event->available_spots < $ticketQuantity) {
+            return back()->with('error', 'Not enough available spots for this event.');
+        }
+
+        if (!$event->isRegistrationOpen()) {
+            return back()->with('error', 'Registration for this event is closed.');
+        }
+
+        $totalAmount = $event->price * $ticketQuantity;
+
+        $booking = Booking::create([
+            'user_id' => $userId,
+            'event_id' => $eventId,
+            'ticket_quantity' => $ticketQuantity,
+            'total_amount' => $totalAmount,
+            'booking_reference' => 'BK-' . strtoupper(uniqid()),
+            'status' => 'pending',
+            'payment_status' => 'pending',
+        ]);
+
+        return redirect()->route('attendee.bookings.index')->with('success', 'Booking created successfully!');
+    }
+
+    public function cancelBooking(Request $request, $id)
+    {
+        $userId = $request->user()->id;
+        
+        $booking = Booking::where('user_id', $userId)
+            ->where('id', $id)
+            ->firstOrFail();
+
+        if ($booking->status === 'confirmed') {
+            return back()->with('error', 'Cannot cancel confirmed booking.');
+        }
+
+        $booking->update(['status' => 'cancelled']);
+
+        return back()->with('success', 'Booking cancelled successfully.');
     }
 }

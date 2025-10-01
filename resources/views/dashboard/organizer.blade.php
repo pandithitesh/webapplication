@@ -107,7 +107,7 @@
             <span class="text-sm text-gray-500">Generated using raw SQL query</span>
         </div>
         
-        @if(count($eventsReport) > 0)
+        @if(isset($eventsReport) && $eventsReport && count($eventsReport) > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -126,10 +126,10 @@
                                 {{ $event->title }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y g:i A') }}
+                                {{ \Carbon\Carbon::parse($event->event_date)->format('M d, Y g:i A') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $event->max_attendees }}
+                                {{ $event->total_capacity }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 {{ $event->current_bookings }}
