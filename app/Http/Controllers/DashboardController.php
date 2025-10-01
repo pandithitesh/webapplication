@@ -113,7 +113,7 @@ class DashboardController extends Controller
                                ->get();
 
         $upcomingEvents = Booking::where('user_id', $userId)
-                               ->confirmed()
+                               ->where('bookings.status', 'confirmed')
                                ->whereHas('event', function ($query) {
                                    $query->where('start_date', '>', now());
                                })
@@ -124,7 +124,7 @@ class DashboardController extends Controller
                                ->get();
 
         $pastEvents = Booking::where('user_id', $userId)
-                           ->confirmed()
+                           ->where('bookings.status', 'confirmed')
                            ->whereHas('event', function ($query) {
                                $query->where('end_date', '<', now());
                            })
