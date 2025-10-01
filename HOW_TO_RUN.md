@@ -1,124 +1,71 @@
 # How to Run the Event Management System
 
-## Quick Start Guide
+## 🚀 Quick Start (Everything Already Installed)
 
-### 1. Navigate to Project Directory
+### Step 1: Open Terminal
+Open your terminal/command prompt
+
+### Step 2: Navigate to Project
 ```bash
 cd "/Users/hiteshsharma/Downloads/Web application/event-management-system"
 ```
 
-### 2. Install Dependencies (if not already done)
-```bash
-composer install
-```
-
-### 3. Set Up Environment
-```bash
-# Copy environment file
-cp .env.example .env
-
-# Generate application key
-php artisan key:generate
-```
-
-### 4. Database Setup
-```bash
-# Create database in MySQL (if not exists)
-mysql -u root -p
-CREATE DATABASE event_management;
-exit
-
-# Run migrations and seed data
-php artisan migrate:fresh --seed
-```
-
-### 5. Start the Server
+### Step 3: Start Server
 ```bash
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-### 6. Access the Application
-Open your browser and go to: **http://127.0.0.1:8000**
+### Step 4: Open Browser
+Go to: **http://127.0.0.1:8000**
 
-## Test User Accounts
+## 🔑 Login Credentials (All passwords: `password`)
 
 ### Organizer Accounts:
-- **Email:** john.organizer@example.com
-- **Password:** password
-
-- **Email:** sarah.organizer@example.com  
-- **Password:** password
+- `orgnizer@test.com` - Has 5 events
+- `test@example.com` - Has 2 events  
+- `john@example.com` - Has 3 events
+- `sarah@example.com` - Has 6 events
+- `mike@example.com` - Has 3 events
 
 ### Attendee Accounts:
-- **Email:** attendee1@example.com
-- **Password:** password
+- `alice@example.com`
+- `bob@example.com`
+- `carol@example.com`
+- `david@example.com`
+- `emma@example.com`
 
-- **Email:** attendee2@example.com
-- **Password:** password
+## 🛠️ Troubleshooting
 
-### Your Test Account:
-- **Email:** hs9812000@gmail.com
-- **Password:** password
-
-## Features to Test
-
-1. **Public Access:**
-   - Browse events without login
-   - View event details
-
-2. **As Attendee:**
-   - Login with attendee account
-   - Book events
-   - View "My Bookings"
-   - See personalized recommendations
-
-3. **As Organizer:**
-   - Login with organizer account
-   - Create new events
-   - Edit/delete your events
-   - View dashboard with statistics
-
-## Troubleshooting
-
-### If you get "Address already in use" error:
+### If Server Won't Start (Port Busy):
 ```bash
-# Find and kill process using port 8000
 lsof -ti:8000 | xargs kill -9
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-### If you get database errors:
+### If Database Issues:
 ```bash
-# Reset database
 php artisan migrate:fresh --seed
 ```
 
-### If you get permission errors:
-```bash
-# Fix storage permissions
-chmod -R 775 storage bootstrap/cache
-```
+## 📋 What You Can Do
 
-## Application Structure
+### As Organizer:
+- View dashboard with event statistics
+- Create, edit, delete events
+- View events report (raw SQL)
+- Manage bookings
 
-- **Home Page:** http://127.0.0.1:8000
-- **Events List:** http://127.0.0.1:8000/events
-- **Login:** http://127.0.0.1:8000/login
-- **Register:** http://127.0.0.1:8000/register
+### As Attendee:
+- Browse and book events
+- View "My Bookings"
+- See personalized recommendations
+- Filter events with AJAX
 
-## Development Commands
+## 🎯 Quick Test
+1. **Login as Organizer:** `orgnizer@test.com` / `password`
+2. **Check Dashboard:** See your 5 events
+3. **Login as Attendee:** `alice@example.com` / `password`
+4. **Book Events:** Try booking some events
 
-```bash
-# Run tests
-php artisan test
-
-# Clear cache
-php artisan cache:clear
-php artisan config:clear
-php artisan route:clear
-
-# View routes
-php artisan route:list
-```
-
-## Stop the Server
-Press `Ctrl + C` in the terminal where the server is running.
+## Stop Server
+Press `Ctrl + C` in terminal

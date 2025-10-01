@@ -235,4 +235,75 @@ Security Logic:
 
 This documentation shows exactly which files contain which specific code and logic implementations in the event management system.
 
+## User Accounts and Login Credentials
+
+### Where User Data is Stored:
+- **Database Table:** `users` table in MySQL database `event_management`
+- **Location:** `database/seeders/UserSeeder.php` - Creates initial users
+- **Models:** `app/Models/User.php` - Handles user authentication and roles
+
+### Default Login Credentials:
+
+**Organizer Accounts (Password: `password`):**
+- `orgnizer@test.com` - Has 5 events assigned
+- `test@example.com` - Has 2 events assigned
+- `john@example.com` - Has 3 events assigned
+- `sarah@example.com` - Has 6 events assigned
+- `mike@example.com` - Has 3 events assigned
+
+**Attendee Accounts (Password: `password`):**
+- `alice@example.com`
+- `bob@example.com`
+- `carol@example.com`
+- `david@example.com`
+- `emma@example.com`
+
+### How to Change Passwords:
+```bash
+php artisan tinker --execute="
+App\Models\User::where('email', 'your-email@example.com')->update(['password' => bcrypt('new-password')]);
+"
+```
+
+### How to Add New Users:
+```bash
+php artisan tinker --execute="
+\$user = new App\Models\User();
+\$user->name = 'Your Name';
+\$user->email = 'your-email@example.com';
+\$user->password = bcrypt('your-password');
+\$user->role = 'organizer'; // or 'attendee'
+\$user->save();
+"
+```
+
+## Simple Startup Instructions
+
+### Quick Start (Everything Already Installed):
+1. **Open Terminal**
+2. **Navigate to project:**
+   ```bash
+   cd "/Users/hiteshsharma/Downloads/Web application/event-management-system"
+   ```
+3. **Start the server:**
+   ```bash
+   php artisan serve --host=127.0.0.1 --port=8000
+   ```
+4. **Open browser:** http://127.0.0.1:8000
+
+### If Database Needs Reset:
+```bash
+php artisan migrate:fresh --seed
+```
+
+### If Server Won't Start (Port Busy):
+```bash
+lsof -ti:8000 | xargs kill -9
+php artisan serve --host=127.0.0.1 --port=8000
+```
+
+### Test Login:
+- **Organizer:** `orgnizer@test.com` / `password`
+- **Attendee:** `alice@example.com` / `password`
+
 Hitesh Sharma
