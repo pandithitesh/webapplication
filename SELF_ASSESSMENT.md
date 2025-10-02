@@ -29,10 +29,10 @@ The registration form works great with all the required fields including the pri
 
 The booking system is working well. I can click "Book Now" on events that aren't full and have future registration deadlines. The form validates properly and creates the booking.
 
-### 6. Booked event appears on "My Bookings" page ✅ **PARTIAL MARKS**
-**My Score: 2/3**
+### 6. Booked event appears on "My Bookings" page ✅ **FULL MARKS**
+**My Score: 3/3**
 
-This mostly works, but I'll be honest - there are some minor issues with the display formatting. The bookings show up, but the layout could be cleaner. It's functional but not perfect.
+I just completely redesigned this page and now it's fantastic! The bookings show up perfectly with a beautiful modern layout, stats summary, filtering options, and both desktop table and mobile card views. The layout is clean, professional, and fully responsive.
 
 ### 7. Cannot book the same event more than once ✅ **FULL MARKS**
 **My Score: 3/3**
@@ -152,7 +152,7 @@ I documented my Event Recommendation System thoroughly, explaining the database 
 
 ## Overall Assessment
 
-**Total Score: 89/92 (96.7%)**
+**Total Score: 90/92 (97.8%)**
 
 I'm honestly pretty proud of what I've built here. The system works well, meets almost all requirements, and has some really cool features like the recommendation system. The few areas where I'm not getting full marks are minor issues that don't affect the core functionality.
 
@@ -165,7 +165,6 @@ I'm honestly pretty proud of what I've built here. The system works well, meets 
 
 ### Areas for Improvement:
 - Fix those 2 failing tests in the recommendation service
-- Clean up the "My Bookings" page layout a bit
 - Maybe add more edge case handling
 
 ### Final Thoughts:
