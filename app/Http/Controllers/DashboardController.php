@@ -169,16 +169,34 @@ class DashboardController extends Controller
         return view('dashboard.organizer', compact('bookings'));
     }
 
+    /**
+     * Show attendee's booking history with filtering
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function myBookings(Request $request)
     {
-        $userId = $request->user()->id;
-        
-        $bookings = Booking::where('user_id', $userId)
-            ->with(['event.organizer', 'event.categories'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $query = auth()->user()->bookings()
+                     ->with(['event.organizer', 'event.categories']);
 
-        return view('dashboard.attendee', compact('bookings'));
+        // Filter by status if provided
+        if ($request->has('status') && $request->get('status') !== '') {
+            $query->where('status', $request->get('status'));
+        }
+
+        // Filter by event search if provided
+        if ($request->has('search') && $request->get('search') !== '') {
+            $search = $request->get('search');
+            $query->whereHas('event', function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('venue', 'like', "%{$search}%");
+            });
+        }
+
+        $bookings = $query->orderBy('created_at', 'desc')->paginate(12);
+
+        return view('dashboard.my-bookings', compact('bookings'));
     }
 
     public function createBooking(Request $request)
