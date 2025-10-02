@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    /**
+     * Route users to appropriate dashboard based on their role
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -21,6 +27,12 @@ class DashboardController extends Controller
         }
     }
 
+    /**
+     * Show organizer dashboard with events report using raw SQL
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function organizer(Request $request)
     {
         $organizerId = $request->user()->id;

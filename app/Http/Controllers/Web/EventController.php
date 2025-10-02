@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+    /**
+     * Show the main events listing page with search and filtering
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $query = Event::with(['organizer', 'categories'])
@@ -114,6 +120,12 @@ class EventController extends Controller
         return response()->json(['reasons' => $reasons]);
     }
 
+    /**
+     * Display details for a specific event
+     * 
+     * @param string $slug
+     * @return \Illuminate\View\View
+     */
     public function show($slug)
     {
         $event = Event::with(['organizer', 'categories', 'reviews.user'])
@@ -134,12 +146,23 @@ class EventController extends Controller
         return view('events.show', compact('event', 'relatedEvents'));
     }
 
+    /**
+     * Show the form for creating a new event (organizers only)
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $categories = Category::active()->ordered()->get();
         return view('events.create', compact('categories'));
     }
 
+    /**
+     * Store a newly created event in the database
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([

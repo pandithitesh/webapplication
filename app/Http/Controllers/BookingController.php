@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
+    /**
+     * Display user's booking history with filtering options
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
     {
         $query = $request->user()->bookings()
@@ -32,6 +38,12 @@ class BookingController extends Controller
         ]);
     }
 
+    /**
+     * Create a new booking with manual capacity validation
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

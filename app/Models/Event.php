@@ -120,6 +120,11 @@ class Event extends Model
         return $this->status === 'completed';
     }
 
+    /**
+     * Check if event registration is still open
+     * 
+     * @return bool
+     */
     public function isRegistrationOpen(): bool
     {
         return $this->isPublished() && 
@@ -133,6 +138,11 @@ class Event extends Model
         return max(0, $this->capacity - $bookedSpots);
     }
 
+    /**
+     * Check if the event is sold out
+     * 
+     * @return bool
+     */
     public function isSoldOut(): bool
     {
         return $this->available_spots <= 0;

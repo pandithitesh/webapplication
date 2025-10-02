@@ -9,6 +9,13 @@ use Illuminate\Support\Collection;
 
 class EventRecommendationService
 {
+    /**
+     * Generate personalized event recommendations for a user
+     * 
+     * @param User $user
+     * @param int $limit
+     * @return Collection
+     */
     public function getRecommendationsForUser(User $user, int $limit = 6): Collection
     {
         if (!$user->isAttendee()) {

@@ -257,6 +257,7 @@ This documentation shows exactly which files contain which specific code and log
 - `carol@example.com`
 - `david@example.com`
 - `emma@example.com`
+- `hitesh.attendee@gmail.com` (test account)
 
 ### How to Change Passwords:
 ```bash
